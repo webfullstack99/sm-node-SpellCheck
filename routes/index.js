@@ -19,8 +19,9 @@ router.post('/', async function (req, res, next) {
             try {
                 let tempInput = CheckSpelling.makeClean(req.body.input)
                 let spell = nspell(dict)
-                for (let word of tempInput.split(/[\s\.\,\!\*\?\(\)\"\"\'\']/))
-                    checkSpellingResult += CheckSpelling.solveWord(!spell.correct(word), word);
+                for (let word of tempInput.split(/[\s\.\,\!\*\?\(\)\"\"\'\':;]/))
+                    if (word.trim()!='')
+                        checkSpellingResult += CheckSpelling.solveWord(!spell.correct(word), word);
             } catch (error) { console.log('input invalid'); }
             checkSpellingResult = Custom.asignString(checkSpellingResult, req.body.input);
         }
