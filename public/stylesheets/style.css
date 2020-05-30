@@ -1,0 +1,12 @@
+.highlight{
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: hsl(0, 100%, 80%);
+    border-radius: 7px;
+}
+
+.result-container{
+    min-height: 134px;
+    border-radius: 5px;
+    border-color: rgb(173, 173, 173) !important;
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+
+<body>
+    <div class="container mt-2">
+        <div class="row">
+            <% var output = output || 'Waiting for result...' %>
+            <% var input = input || '' %>
+            <!-- INPUT -->
+            <div class="col-lg-6">
+                <p class="lead">Input</p>
+                <form method="post" action="">
+                    <textarea name="input" placeholder="" id="area-input" class="form-control"
+                        rows="5"><%=input%></textarea>
+                    <button type="submit" name="check-spelling" id="submit-btn" class="btn btn-primary mt-2">Check</button>
+                </form>
+            </div>
+
+            <!-- OUTPUT -->
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <p class="lead">Output</p>
+                <p class="result-container border border-secondary p-2"> <%-output%> </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
