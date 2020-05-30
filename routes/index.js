@@ -28,7 +28,6 @@ router.post('/', async function (req, res, next) {
         res.render('index', {
             input: req.body.input,
             output: checkSpellingResult,
-            title: 'Express'
         });
     })
 });
