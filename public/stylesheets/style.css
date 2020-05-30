@@ -8,5 +8,10 @@
 .result-container{
     min-height: 134px;
     border-radius: 5px;
-    border-color: rgb(173, 173, 173) !important;
+    border-color: rgb(173, 173, 173, 50%) !important;
+    background-color: white;
+}
+
+body{
+    background: linear-gradient(to right, #E0EAFC, #CFDEF3);
 }

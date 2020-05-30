@@ -1,10 +1,8 @@
 module.exports = {
+    highlightClass: 'highlight',
+
     makeClean: function (value) {
         return value.replace(/[\r\n]/g, '');
-    },
-
-    solveWord: function (isIncorrect, word) {
-        return (isIncorrect && !this.isCorrect(word)) ? ` <span class="highlight">${word}</span>` : ` ${word}`;
     },
 
     isCorrect: function (word) {
@@ -20,5 +18,26 @@ module.exports = {
         if (word.match(/^\d+h$/)) flag = true;
 
         return flag;
+    },
+
+    getSpellingResult: function (str, spell) {
+        let result = str;
+        let incorrectWordArray = this.getIncorrectWordArray(str, spell);
+        for (let word of incorrectWordArray) {
+            result = result.replace(new RegExp(`${word}`, ''), `<span class="${this.highlightClass}">${word}</span>`);
+        }
+        return result;
+    },
+
+    getIncorrectWordArray: function (str, spell) {
+        let wordArray = [];
+        for (let word of str.split(/[\s\.\,\!\*\?\(\)\"\"\'\':;]/))
+            if (word.trim() != '')
+                if (!wordArray.includes(word) && !spell.correct(word) && !this.isCorrect(word))
+                    wordArray.push(word);
+        return wordArray;
+
     }
+
+
 }
