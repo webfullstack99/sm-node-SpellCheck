@@ -1,17 +1,17 @@
-.highlight{
+.highlight {
     padding-left: 5px;
     padding-right: 5px;
     background-color: hsl(0, 100%, 80%);
-    border-radius: 7px;
+    border-radius: 8px;
 }
 
-.result-container{
+.result-container {
     min-height: 134px;
     border-radius: 5px;
     border-color: rgb(173, 173, 173, 50%) !important;
     background-color: white;
 }
 
-body{
+body {
     background: linear-gradient(to right, #E0EAFC, #CFDEF3);
 }
