@@ -3,15 +3,20 @@ var router = express.Router();
 
 var dictionary = require('dictionary-vi')
 var nspell = require('nspell')
+
+let page = '';
+var __path = require('../app/path');
 var CheckSpelling = require('../libs/check-spelling');
 
+let viewFolder = `${__path.views}/pages`;
+
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    res.render('index');
+router.get(`/`, function (req, res, next) {
+    res.render(`${viewFolder}/index`);
 });
 
 // check spelling
-router.post('/', async function (req, res, next) {
+router.post(`/`, async function (req, res, next) {
     dictionary((err, dict) => {
         let checkSpellingResult = '';
         if (req.body.input) {
@@ -20,7 +25,7 @@ router.post('/', async function (req, res, next) {
             checkSpellingResult = CheckSpelling.getSpellingResult(tempInput, spell);
         }
 
-        res.render('index', {
+        res.render(`${viewFolder}/index`, {
             input: req.body.input,
             output: checkSpellingResult,
         });

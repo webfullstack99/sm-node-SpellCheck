@@ -1,11 +1,17 @@
-.highlight {
-    padding-left: 5px;
-    padding-right: 5px;
-    background-color: hsl(0, 100%, 80%);
+.highlight-correct, .highlight-incorrect {
+    padding: 5px;
     border-radius: 8px;
 }
 
-.result-container {
+.highlight-correct {
+    background-color: hsl(113, 100%, 80%);
+}
+
+.highlight-incorrect {
+    background-color: hsl(0, 100%, 80%);
+}
+
+#result-container {
     min-height: 134px;
     border-radius: 5px;
     border-color: rgb(173, 173, 173, 50%) !important;

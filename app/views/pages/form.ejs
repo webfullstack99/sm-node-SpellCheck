@@ -1,0 +1,61 @@
+<div class="row">
+    <% 
+        var incorrect = incorrect || '';
+        var correct = correct || '';
+    %>
+    <!-- INPUT -->
+    <div class="offset-lg-3 offset-0 col-lg-6">
+        <p class="lead d-flex justify-content-between align-items-center">
+            <a href="/form/json">Spelling form</a>
+            <!-- MESSAGE -->
+            <% var status = status || false %>
+            <% if (status) {%> <span id="add-spelling-message" class="badge badge-success">Add spelling successfully</span><% } %>
+        </p>
+        <form class="form-inline d-flex justify-content-between" method="post" action="" id="add-spelling-form">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="incorrect-input" name="incorrect"
+                value="<%=incorrect%>" placeholder="Incorrect word">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="correct-input" name="correct" value="<%=correct%>"
+                placeholder="Correct word">
+            <div>
+                <button type="submit" class="btn-sm btn btn-primary mb-2">Add</button>
+                <a href="/" class="btn-sm ml-1 btn btn-dark mb-2">Back</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- SPELLING LIST -->
+    <div class="offset-lg-3 offset-0 col-lg-6">
+        <% 
+            let CheckSpelling = require(`${__path.libs}/check-spelling`);
+            let wordPairArray = CheckSpelling.getWordPairArray();
+            let index = 0;
+        %>
+        <% if (wordPairArray.length > 0) { %>
+        <table class="table table-light table-striped ">
+            <thead class="">
+                <tr>
+                    <th scope="column">#</th>
+                    <th>Incorrect</th>
+                    <th>Correct</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (let pair of wordPairArray){ %>
+                <% 
+                        index++;
+                    %>
+                <tr>
+                    <th scope="row"><%=index%></th>
+                    <td><%= pair.incorrect %></td>
+                    <td><%= pair.correct %></td>
+                    <td>
+                        <a href="/form/delete/<%=pair.incorrect%>">Delete</a>
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+        <% } %>
+    </div>
+</div>
