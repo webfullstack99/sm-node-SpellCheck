@@ -1,1 +1,62 @@
-[{"incorrect":"cháu","correct":"Chúa"},{"incorrect":"cno|onc|ocn","correct":"con"},{"incorrect":"ĐK","correct":"ĐK"},{"incorrect":"đười","correct":"đời"},{"incorrect":"ngài","correct":"Ngài"}]
+[
+    {
+        "incorrect": "cháu",
+        "correct": "Chúa"
+    },
+    {
+        "incorrect": "chúa cha",
+        "correct": "Chúa Cha"
+    },
+    {
+        "incorrect": "chúa con",
+        "correct": "Chúa Con"
+    },
+    {
+        "incorrect": "chúa thánh thần",
+        "correct": "Chúa Thánh Thần"
+    },
+    {
+        "incorrect": "cno|onc|ocn",
+        "correct": "con"
+    },
+    {
+        "incorrect": "đấng",
+        "correct": "Đấng"
+    },
+    {
+        "incorrect": "ĐK",
+        "correct": "ĐK"
+    },
+    {
+        "incorrect": "đười",
+        "correct": "đời"
+    },
+    {
+        "incorrect": "giêsu",
+        "correct": "Giê-su"
+    },
+    {
+        "incorrect": "giuse",
+        "correct": "Giu-se"
+    },
+    {
+        "incorrect": "lạy cha",
+        "correct": "lạy Cha"
+    },
+    {
+        "incorrect": "ma\\-ri\\-a",
+        "correct": "Maria"
+    },
+    {
+        "incorrect": "ngài",
+        "correct": "Ngài"
+    },
+    {
+        "incorrect": "thiêng chúa",
+        "correct": "Thiên Chúa"
+    },
+    {
+        "incorrect": "tin mừng",
+        "correct": "Tin Mừng"
+    }
+]

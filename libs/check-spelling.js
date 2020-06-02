@@ -8,25 +8,35 @@ module.exports = {
         let result = str;
         result = this.checkEachWord(str, spell);
         result = this.checkWordPair(result, spell);
+        result = this.solveAccent(result);
         result = this.highlight(result);
         return result;
     },
 
+    solveAccent: function(str){
+        let result = str;
+        result = result.replace(/[\.\?\!\:](\s*\|*\=*)(\W)/g, (x)=>{
+            let result = x.slice(0, x.length-1)+x.slice(-1).toUpperCase();
+            return result;
+        });
+        return result;
+    },
+
+    ucfirst: function(str){
+        return str[0].toUpperCase()+str.slice(1).toLowerCase();
+    },
+
     highlight: function(str){
         result = str;
-        console.log(result);
         result = result.replace(/\|\|\=\=([^\|\=]+)\=\=\|\|/ig, '==$1==');
         result = result.replace(/\|\|([^\|\=]+)\=\=([^\|\=]+)\=\=([^\|\=]+)\|\|/ig, '||$1$2$3||');
-        console.log(result);
         
 
         // format incorrect
         result = result.replace(/\|\|([^\|\=]+)\|\|/ig, `<span class="${this.highlightIncorrectClass}">$1</span>`)
-        console.log(result);
         
         // format correct
         result = result.replace(/\=\=([^\|\=]+)\=\=/ig, `<span class="${this.highlightCorrectClass}">$1</span>`)
-        console.log(result);
         return result;
     },
 
