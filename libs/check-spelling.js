@@ -1,42 +1,31 @@
-var jsonfile = require('jsonfile')
+const jsonfile = require('jsonfile');
+const Helper = require('./helper');
 
 module.exports = {
     highlightIncorrectClass: 'highlight-incorrect',
     highlightCorrectClass: 'highlight-correct',
 
-    getSpellingResult: function (str, spell) {
-        let result = str;
+    getResult: function (str, spell) {
+        let result = str.trim();
         result = this.checkEachWord(str, spell);
         result = this.checkWordPair(result, spell);
-        result = this.solveAccent(result);
+        result = this.ucfirstSpecial(result);
+        result = this.solvePunctuation(result);
         result = this.highlight(result);
         return result;
     },
 
-    solveAccent: function(str){
+    ucfirstSpecial: function (str) {
         let result = str;
-        result = result.replace(/[\.\?\!\:](\s*\|*\=*)(\W)/g, (x)=>{
-            let result = x.slice(0, x.length-1)+x.slice(-1).toUpperCase();
-            return result;
+        result = result.replace(/^(\s*\|*\=*)((?!\s)[\W\w])+\s?/g, (x) => {
+            let firstWord = x;
+            if (x.indexOf('|') == -1 && !x.match(/\d/g)) {
+                let realWord = x.match(/[^|=]+/)[0];
+                firstWord = Helper.ucfirst(realWord);
+                if (x.indexOf('=') > -1 | realWord.slice(0, 1) == realWord.slice(0, 1).toLowerCase()) firstWord = '==' + firstWord + '==';
+            }
+            return firstWord;
         });
-        return result;
-    },
-
-    ucfirst: function(str){
-        return str[0].toUpperCase()+str.slice(1).toLowerCase();
-    },
-
-    highlight: function(str){
-        result = str;
-        result = result.replace(/\|\|\=\=([^\|\=]+)\=\=\|\|/ig, '==$1==');
-        result = result.replace(/\|\|([^\|\=]+)\=\=([^\|\=]+)\=\=([^\|\=]+)\|\|/ig, '||$1$2$3||');
-        
-
-        // format incorrect
-        result = result.replace(/\|\|([^\|\=]+)\|\|/ig, `<span class="${this.highlightIncorrectClass}">$1</span>`)
-        
-        // format correct
-        result = result.replace(/\=\=([^\|\=]+)\=\=/ig, `<span class="${this.highlightCorrectClass}">$1</span>`)
         return result;
     },
 
@@ -55,8 +44,41 @@ module.exports = {
         return false;
     },
 
+    makeClean: function (value) {
+        return value.replace(/[\r\n]/g, ' ');
+    },
+
+    // SUPPORTED FUNCTIONS ===========
+    solvePunctuation: function (str) {
+        let result = str;
+        result = result.replace(/(?<=[\.\?\!\:\"\'\“\”])(\s*\|*\=*)((?!\s)[\W\w])+/g, (x) => {
+            let word = x;
+            if (x.indexOf('|') == -1) {
+                let realWord = x.match(/(?!\s)[^|=]+/)[0];
+                word = Helper.ucfirst(realWord);
+                if (x.indexOf('=') > -1 | realWord.slice(0, 1) == realWord.slice(0, 1).toLowerCase()) word = '==' + word + '==';
+            }
+            return ` ${word}`;
+        });
+        return result;
+    },
+
+    highlight: function (str) {
+        result = str;
+        result = result.replace(/\|\|\=\=([^\|\=]+)\=\=\|\|/ig, '==$1==');
+        result = result.replace(/\|\|([^\|\=]+)\=\=([^\|\=]+)\=\=([^\|\=]+)\|\|/ig, '||$1$2$3||');
+
+
+        // format incorrect
+        result = result.replace(/\|\|([^\|\=]+)\|\|/ig, `<span class="${this.highlightIncorrectClass}">$1</span>`)
+
+        // format correct
+        result = result.replace(/\=\=([^\|\=]+)\=\=/ig, `<span class="${this.highlightCorrectClass}">$1</span>`)
+        return result;
+    },
+
     isWordPairExist: function (incorrect) {
-        for (let pair of this.getAllWordPairArray()) 
+        for (let pair of this.getAllWordPairArray())
             if (pair.incorrect == incorrect) return true;
         return false;
     },
@@ -64,20 +86,30 @@ module.exports = {
     checkWordPair: function (str) {
         let result = str;
         let wordPairArray = this.getAllWordPairArray();
-        for (let pair of wordPairArray)
-            if (result.match(new RegExp(pair.incorrect, 'i'))) {
-                result = result.replace(new RegExp(pair.incorrect, 'ig'), `==${pair.correct}==`);
+        for (let pair of wordPairArray) {
+            let errorWordPairArray = this.getErrorWordPairArray(result, pair);
+            if (errorWordPairArray)
+                for (let value of errorWordPairArray) {
+                    result = result.replace(new RegExp(value, 'g'), `==${pair.correct}==`);
+                }
+        }
+        return result;
+    },
+
+    getErrorWordPairArray: function (str, pair) {
+        let matchResult = str.match(new RegExp(pair.incorrect, 'ig'));
+        let result = [];
+        if (matchResult != null) {
+            for (let key in matchResult) {
+                if (matchResult[key] != pair.correct) result.push(matchResult[key]);
             }
+        }
         return result;
     },
 
     getAllWordPairArray: function () {
         let all = [...this.getWordPairArray('custom'), ...this.getWordPairArray('general'), ...this.getWordPairArray('ignore')];
         return all;
-    },
-
-    makeClean: function (value) {
-        return value.replace(/[\r\n]/g, '');
     },
 
     isCorrect: function (word) {
@@ -106,20 +138,12 @@ module.exports = {
 
     getIncorrectWordArray: function (str, spell) {
         let wordArray = [];
-        for (let word of str.split(/[\s\.\,\!\*\?\(\)\"\"\'\':;]/))
+        for (let word of str.split(/[\s\.\,\!\*\?\(\)\"\"\'\':;“”]/))
             if (word.trim() != '')
-                if (!wordArray.includes(word) && !spell.correct(word) && !this.isCorrect(word))
+                if (!wordArray.includes(word) && !spell.correct(word) && !this.isCorrect(word)) {
                     wordArray.push(word);
+                }
         return wordArray;
-    },
-
-    getWordPairArray: function (type) {
-        return jsonfile.readFileSync(this.getFilePath(type));
-    },
-
-    saveWordPairArray: function (data, type) {
-        data = this.sort(data);
-        jsonfile.writeFileSync(this.getFilePath(type), data);
     },
 
     sort: function (arr) {
@@ -152,4 +176,15 @@ module.exports = {
         else if (type == 'general') return `${__dirname}/word-pair.json`;
         else if (type == 'ignore') return `${__dirname}/ignore-word-pair.json`;
     },
+
+    // get and save word pair
+    getWordPairArray: function (type) {
+        return jsonfile.readFileSync(this.getFilePath(type));
+    },
+
+    saveWordPairArray: function (data, type) {
+        data = this.sort(data);
+        jsonfile.writeFileSync(this.getFilePath(type), data);
+    },
+
 }

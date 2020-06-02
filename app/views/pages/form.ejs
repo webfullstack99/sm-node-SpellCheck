@@ -6,7 +6,7 @@
     %>
     <!-- INPUT -->
     <div class="offset-lg-2 offset-0 col-lg-8">
-        <p class="title lead"><a title="Get json data" href="/form/json<%=urlQuery%>">Spelling form</a></p>
+        <p class="title lead"><a title="Get json data" href="/form/json<%=urlQuery%>">Custom</a></p>
         <div class="my-2 d-flex justify-content-between align-items-center" title="Change word pair type">
             <div class="btn-group btn-group-sm" id="type-menu">
                 <a name="custom" href="/form?type=custom" class="btn">My word pair</a>
@@ -16,7 +16,7 @@
             <% var flash = flash || '' %>
             <%- flash %>
         </div>
-        <p id="message" class="mt-3 text-dark lead d-none">Please fill inputs first!</p>
+        <p id="message" class="badge badge-danger d-none">Please type input first!</p>
         <form class="form-inline " method="post" action="" id="add-spelling-form">
             <input type="text" class="form-control mb-2 mr-sm-2" id="incorrect-input" name="incorrect"
                 value="<%=incorrect%>" placeholder="Incorrect word">
