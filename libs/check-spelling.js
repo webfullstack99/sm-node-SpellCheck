@@ -20,7 +20,7 @@ module.exports = {
         result = result.replace(/^(\s*\|*\=*)((?!\s)[\W\w])+\s?/g, (x) => {
             let firstWord = x;
             if (x.indexOf('|') == -1 && !x.match(/\d/g)) {
-                let realWord = x.match(/[^|=]+/)[0];
+                let realWord = x.match(/[^|="]+/)[0];
                 firstWord = Helper.ucfirst(realWord);
                 if (x.indexOf('=') > -1 | realWord.slice(0, 1) == realWord.slice(0, 1).toLowerCase()) firstWord = '==' + firstWord + '==';
             }
@@ -51,14 +51,15 @@ module.exports = {
     // SUPPORTED FUNCTIONS ===========
     solvePunctuation: function (str) {
         let result = str;
-        result = result.replace(/(?<=[\.\?\!\:\"\'\“\”])(\s*\|*\=*)((?!\s)[\W\w])+/g, (x) => {
+        result = result.replace(/(?<=[\.\?\!\:])(\s*\|*\=*)((?!\s)[\W\w])+/g, (x) => {
             let word = x;
-            if (x.indexOf('|') == -1) {
+            if (x.indexOf('|') == -1 && !x.match(/\d/) && !x.match(/[\d\.\,\!\?\"]/)) {
                 let realWord = x.match(/(?!\s)[^|=]+/)[0];
                 word = Helper.ucfirst(realWord);
                 if (x.indexOf('=') > -1 | realWord.slice(0, 1) == realWord.slice(0, 1).toLowerCase()) word = '==' + word + '==';
+                return ` ${word}`;
             }
-            return ` ${word}`;
+            return word;
         });
         return result;
     },
@@ -117,6 +118,7 @@ module.exports = {
 
         // number
         if (word.match(/^\d+$/)) flag = true;
+        if (word.match(/^\d+(,\d+){0,}%$/)) flag = true;
 
         // date
         if (word.match(/^\d+([\/\-]\d+){1,2}$/)) flag = true;
@@ -138,7 +140,7 @@ module.exports = {
 
     getIncorrectWordArray: function (str, spell) {
         let wordArray = [];
-        for (let word of str.split(/[\s\.\,\!\*\?\(\)\"\"\'\':;“”]/))
+        for (let word of str.split(/[\s\.\,\!\*\?\(\)\"\"\'\':;“”\-]/))
             if (word.trim() != '')
                 if (!wordArray.includes(word) && !spell.correct(word) && !this.isCorrect(word)) {
                     wordArray.push(word);
