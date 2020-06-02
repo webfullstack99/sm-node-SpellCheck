@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var expressLayouts = require('express-ejs-layouts');
+const session = require('express-session');
+const flash = require('express-flash-notification');
 
 var indexRouter = require('./routes/index');
 var formRouter = require('./routes/form');
@@ -12,6 +14,16 @@ var usersRouter = require('./routes/users');
 
 
 var app = express();
+
+app.use(cookieParser());
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: 'peter',
+    cookie: {maxAge: 365*24*60*60*1000},
+}));
+
+app.use(flash(app));
 
 // set global vars
 global.__path = require('./app/path');
@@ -38,7 +50,7 @@ app.use(function (req, res, next) {
 });
 
 //app.use(function (req, res, next) {
-    //res.locals.require = require;
+//res.locals.require = require;
 //});
 
 // error handler

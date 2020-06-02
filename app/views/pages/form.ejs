@@ -2,16 +2,22 @@
     <% 
         var incorrect = incorrect || '';
         var correct = correct || '';
+        let urlQuery = `?type=${wordPairType}`;
     %>
     <!-- INPUT -->
-    <div class="offset-lg-3 offset-0 col-lg-6">
-        <p class="lead d-flex justify-content-between align-items-center">
-            <a href="/form/json">Spelling form</a>
+    <div class="offset-lg-2 offset-0 col-lg-8">
+        <p class="title lead"><a title="Get json data" href="/form/json<%=urlQuery%>">Spelling form</a></p>
+        <div class="my-2 d-flex justify-content-between align-items-center" title="Change word pair type">
+            <div class="btn-group btn-group-sm" id="type-menu">
+                <a name="custom" href="/form?type=custom" class="btn">My word pair</a>
+                <a name="general" href="/form?type=general" class="btn">General</a>
+            </div>
             <!-- MESSAGE -->
-            <% var status = status || false %>
-            <% if (status) {%> <span id="add-spelling-message" class="badge badge-success">Add spelling successfully</span><% } %>
-        </p>
-        <form class="form-inline d-flex justify-content-between" method="post" action="" id="add-spelling-form">
+            <% var flash = flash || '' %>
+            <%- flash %>
+        </div>
+        <p id="message" class="mt-3 text-dark lead d-none">Please fill inputs first!</p>
+        <form class="form-inline " method="post" action="" id="add-spelling-form">
             <input type="text" class="form-control mb-2 mr-sm-2" id="incorrect-input" name="incorrect"
                 value="<%=incorrect%>" placeholder="Incorrect word">
             <input type="text" class="form-control mb-2 mr-sm-2" id="correct-input" name="correct" value="<%=correct%>"
@@ -24,10 +30,10 @@
     </div>
 
     <!-- SPELLING LIST -->
-    <div class="offset-lg-3 offset-0 col-lg-6">
+    <div class="offset-lg-2 offset-0 col-lg-8">
         <% 
             let CheckSpelling = require(`${__path.libs}/check-spelling`);
-            let wordPairArray = CheckSpelling.getWordPairArray();
+            let wordPairArray = CheckSpelling.getWordPairArray(wordPairType);
             let index = 0;
         %>
         <% if (wordPairArray.length > 0) { %>
@@ -50,7 +56,7 @@
                     <td><%= pair.incorrect %></td>
                     <td><%= pair.correct %></td>
                     <td>
-                        <a href="/form/delete/<%=pair.incorrect%>">Delete</a>
+                        <a href="/form/delete/<%=pair.incorrect%><%=urlQuery%>">Delete</a>
                     </td>
                 </tr>
                 <% } %>

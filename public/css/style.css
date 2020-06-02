@@ -19,5 +19,9 @@
 }
 
 body {
-    background: linear-gradient(to right, #E0EAFC, #CFDEF3);
+    background: linear-gradient(to right, #cfd9df , #e2ebf0);
+}
+
+.title{
+    font-size: 30px;
 }
