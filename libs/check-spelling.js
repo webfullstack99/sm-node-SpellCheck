@@ -10,13 +10,20 @@ module.exports = {
     getResult: function (str, spell) {
         let result = str.trim();
         result = this.checkEachWord(str, spell);
-        console.log(`\nAfter check each word: ${result}`);
+        //console.log(`\nAfter check each word: ${result}`);
+
         result = this.checkWordPair(result, spell);
-        console.log(`After check word pair: ${result}`);
+        //console.log(`After check word pair: ${result}`);
+
+        result = this.prioritizieCorrection(result);
+        //console.log(`After prioritize correction: ${result}`);
+
         result = this.ucfirstSpecial(result);
-        console.log(`After ucfirst: ${result}`);
+        //console.log(`After ucfirst: ${result}`);
+
         result = this.solvePunctuation(result);
-        console.log(`After solve puntuation: ${result}\n`);
+        //console.log(`After solve puntuation: ${result}\n`);
+
         result = this.highlight(result);
         return result;
     },
@@ -24,21 +31,25 @@ module.exports = {
     ucfirstSpecial: function (str) {
         let result = str;
         let pattern = new RegExp(`^(\\s*\\${this.incorrectSign}*\\=*)((?!\\s)[\\W\\w])+\\s?`, 'g');
-        result = result.replace(pattern, (x) => {
-            let firstWord = x;
-            console.log(firstWord);
-            if (x.indexOf(`${this.incorrectSign}`) == -1 && !x.match(/\d/g)) {
-                let pattern = new RegExp(`[^\\|\\="]+`);
-                let realWord = x.match(pattern)[0].trim();
-                let first = realWord.slice(0, 1);
-                if (first == first.slice(0, 1).toLowerCase()) {
-                    firstWord = Helper.ucfirst(realWord);
-                    firstWord = '==' + firstWord + '==';
-                }
-            }
-            return firstWord + ' ';
-        });
+        result = result.replace(pattern, (x) => { return this.solvefirstWordUcfirst(x); });
         return result;
+    },
+
+    solvefirstWordUcfirst: function (x) {
+        //console.log('before: ' + x + '$');
+        let firstWord = x;
+        if (x.indexOf(`${this.incorrectSign}`) == -1 && !x.match(/\d/g)) {
+            let pattern = new RegExp(`[^\\|\\="]+`);
+            let realWord = x.match(pattern)[0].trim();
+            let first = realWord.slice(0, 1);
+            if (first == first.toLowerCase()) {
+                firstWord = Helper.ucfirst(realWord);
+                firstWord = `==${firstWord}`;
+                if (!(x.slice(0, 1) == '=' && x.slice(-1) != '=')) firstWord += '==';
+            }
+        }
+        //console.log('after: ' + x + '$');
+        return firstWord + ' ';
     },
 
     addSpelling: function (incorrect, correct, type) {
@@ -66,32 +77,37 @@ module.exports = {
         let pattern = new RegExp(`(?<=[\\.\\?\\!\\:])(\\s*\\${this.incorrectSign}*\\${this.correctSign}*)((?!\\s)[\\W\\w])+`, 'g')
         result = result.replace(pattern, (x) => {
             let word = x;
-            let pattern = new RegExp(`[\\d\\.\\,\\!\\?\\"]`)
-            if (x.indexOf('|') == -1 && !x.match(/\d/) && !x.match(pattern)) {
+            //console.log(x);
+            if (this.isAfterPunctuation(word)) {
                 let pattern = new RegExp(`(?!\\s)[^\\${this.incorrectSign}\\${this.correctSign}]+`);
                 let realWord = x.match(pattern)[0];
                 word = Helper.ucfirst(realWord);
-                if (x.indexOf('=') > -1 | realWord.slice(0, 1) == realWord.slice(0, 1).toLowerCase()) word = '==' + word + '==';
-                return ` ${word}`;
+                //if (x.indexOf('=') > -1 | realWord.slice(0, 1) == realWord.slice(0, 1).toLowerCase()) word = '==' + word + '==';
+                return ` ==${word}==`;
             }
             return word;
         });
         return result;
     },
 
+    isAfterPunctuation: function (word) {
+        let pattern = new RegExp(`[\\d\\.\\,\\!\\?\\"]`)
+        return (word.indexOf(`${this.incorrectSign}`) == -1 && !word.match(/\d/) && !word.match(pattern));
+    },
+
     highlight: function (str) {
         result = str;
-        let pattern = new RegExp(`(\\${this.incorrectSign}){2}(\\${this.correctSign}){2}([^\\${this.incorrectSign}\\${this.correctSign}]+)(\\${this.correctSign}){2}(\\${this.incorrectSign}){2}`, 'ig');
-        result = result.replace(pattern, '==$1==');
-        result = result.replace(/\|\|([^\|\=]+)\=\=([^\|\=]+)\=\=([^\|\=]+)\|\|/ig, '||$1$2$3||');
-        console.log('before highlight: ' + result);
-
         // format incorrect
         result = result.replace(/\|\|([^\|\=]+)\|\|/ig, `<span class="${this.highlightIncorrectClass}">$1</span>`)
 
         // format correct
         result = result.replace(/\=\=([^\|\=]+)\=\=/ig, `<span class="${this.highlightCorrectClass}">$1</span>`)
         return result;
+    },
+
+    prioritizieCorrection: function (str) {
+        return str.replace(/\|\|(.+)\=\=/g, '==$1==');
+
     },
 
     isWordPairExist: function (incorrect) {
@@ -102,38 +118,60 @@ module.exports = {
 
     checkWordPair: function (str) {
         let result = str;
-        let wordPairArray = this.getAllWordPairArray();
-        let incorrectArrays = [];
-        for (let pair of wordPairArray) {
-            let errorWordPairArray = this.getErrorWordPairArray(result, pair);
-            if (errorWordPairArray.length > 0) incorrectArrays.push(errorWordPairArray);
-        }
+        let incorrectArrays = this.getIncorrectArrays(result)
+        //console.log(incorrectArrays);
+        incorrectArrays = this.sortIncorrectArrays(incorrectArrays);
+        result = this.addCorrectSign(result, incorrectArrays);
+        return result;
+    },
 
-        // sort
-        incorrectArrays = incorrectArrays.sort((x, y) => {
-            return y[0].toLowerCase().localeCompare(x[0].toLowerCase());
-        })
-
+    addCorrectSign: function (str, incorrectArrays) {
+        let result = str;
         for (let arr of incorrectArrays) {
             for (let value of arr) {
-                result = result.replace(new RegExp(`(?![\\|\\=]{1,2})${value}(?![\\|\\=]{1,2})`, 'g'), `==${this.getCorrectWord(value)}==`);
+                let pattern = new RegExp(`(?![\\|\\=]{1,2})${value}(?![\\|\\=]{1,2})`, 'g');
+                if (result.match(pattern) == null)
+                    pattern = new RegExp(`\\|\\|${value}\\|\\|`, 'g');
+                result = result.replace(pattern, `==${this.getCorrectWord(value)}==`);
             }
         }
-
         return result;
+    },
+
+    getIncorrectArrays: function (str) {
+        let wordPairArray = this.getAllWordPairArray();
+        let result = [];
+        for (let pair of wordPairArray) {
+            let errorWordPairArray = this.getErrorWordPairArray(str, pair);
+            if (errorWordPairArray.length > 0) result.push(errorWordPairArray);
+        }
+        return result;
+    },
+
+    sortIncorrectArrays: function (arr) {
+        return arr.sort((x, y) => {
+            return y[0].toLowerCase().localeCompare(x[0].toLowerCase());
+        })
     },
 
     getCorrectWord: function (word) {
         let wordPairArray = this.getAllWordPairArray();
         for (let pair of wordPairArray) {
-            if (pair.incorrect.toLowerCase() == word.toLowerCase()) return pair.correct;
+            let incorrect = pair.incorrect.toLowerCase();
+            word = word.toLowerCase();
+            if (incorrect.includes(word)) {
+                if (incorrect == word) return pair.correct;
+                for (let item of incorrect.split('|')) {
+                    if (item == word) return pair.correct;
+                }
+            }
+            //if ( == word.toLowerCase()) return pair.correct;
         }
         return null;
     },
 
     getErrorWordPairArray: function (str, pair) {
-        //clet pattern = new RegExp(`(?!|)${pair.incorrect}(?!|)`, 'ig');
-        let pattern = new RegExp(`(?!(\\||\\=))${pair.incorrect}(?!(\\||\\=))`, 'ig');
+        let pattern = new RegExp(`(?<![^\\|])${pair.incorrect}(?![^\\|])`, 'ig');
         let matchResult = str.match(pattern);
         let result = [];
         if (matchResult != null) {
@@ -141,7 +179,6 @@ module.exports = {
                 if (matchResult[key] != pair.correct && !result.includes(matchResult[key])) result.push(matchResult[key]);
             }
         }
-        //if (result.length > 0) console.log(result);
         return result;
     },
 
@@ -169,9 +206,8 @@ module.exports = {
     checkEachWord: function (str, spell) {
         let result = str;
         let incorrectWordArray = this.getIncorrectWordArray(str, spell);
-        for (let word of incorrectWordArray) {
+        for (let word of incorrectWordArray)
             result = result.replace(new RegExp(`${word}`, 'g'), `||${word}||`);
-        }
         return result;
     },
 
