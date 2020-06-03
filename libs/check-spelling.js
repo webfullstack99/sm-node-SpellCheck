@@ -10,19 +10,19 @@ module.exports = {
     getResult: function (str, spell) {
         let result = str.trim();
         result = this.checkEachWord(str, spell);
-        //console.log(`\nAfter check each word: ${result}`);
+        console.log(`\nAfter check each word: ${result}`);
 
         result = this.checkWordPair(result, spell);
-        //console.log(`After check word pair: ${result}`);
+        console.log(`After check word pair: ${result}`);
 
         result = this.prioritizieCorrection(result);
-        //console.log(`After prioritize correction: ${result}`);
+        console.log(`After prioritize correction: ${result}`);
 
         result = this.ucfirstSpecial(result);
-        //console.log(`After ucfirst: ${result}`);
+        console.log(`After ucfirst: ${result}`);
 
         result = this.solvePunctuation(result);
-        //console.log(`After solve puntuation: ${result}\n`);
+        console.log(`After solve puntuation: ${result}\n`);
 
         result = this.highlight(result);
         return result;
@@ -36,7 +36,7 @@ module.exports = {
     },
 
     solvefirstWordUcfirst: function (x) {
-        //console.log('before: ' + x + '$');
+        x = x.trim();
         let firstWord = x;
         if (x.indexOf(`${this.incorrectSign}`) == -1 && !x.match(/\d/g)) {
             let pattern = new RegExp(`[^\\|\\="]+`);
@@ -48,7 +48,6 @@ module.exports = {
                 if (!(x.slice(0, 1) == '=' && x.slice(-1) != '=')) firstWord += '==';
             }
         }
-        //console.log('after: ' + x + '$');
         return firstWord + ' ';
     },
 
@@ -102,6 +101,8 @@ module.exports = {
 
         // format correct
         result = result.replace(/\=\=([^\|\=]+)\=\=/ig, `<span class="${this.highlightCorrectClass}">$1</span>`)
+        
+        result = result.replace(/\|\||\=\=/g, '');
         return result;
     },
 
