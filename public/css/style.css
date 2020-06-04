@@ -12,6 +12,7 @@
 }
 
 #result-container {
+    line-height: 35px;
     min-height: 134px;
     border-radius: 5px;
     border-color: rgb(173, 173, 173, 50%) !important;
