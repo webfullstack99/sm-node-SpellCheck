@@ -57,10 +57,15 @@ function onCopy() {
 }
 
 function onPaste() {
+    if (!navigator) $(selector.pasteBtn).addClass('d-none');
     $(selector.pasteBtn).click(async function (e) {
-        let text = await navigator.clipboard.readText();
-        $(selector.areaInput).val(text);
-        $(selector.form).submit();
+        try {
+            let text = await navigator.clipboard.readText();
+            if (text.trim() != '') {
+                $(selector.areaInput).val(text);
+                $(selector.form).submit();
+            }
+        } catch (e) { }
     });
 }
 
