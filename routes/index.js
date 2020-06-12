@@ -22,9 +22,9 @@ router.post(`/`, async function (req, res, next) {
         if (req.body.input) {
             let tempInput = CheckSpelling.makeClean(req.body.input)
             let spell = nspell(dict)
-            try {
+            //try {
                 checkSpellingResult = CheckSpelling.getResult(tempInput, spell);
-            } catch (e) { console.log(e.message); }
+            //} catch (e) { console.log(e.message); }
         }
 
         res.render(`${viewFolder}/index`, {

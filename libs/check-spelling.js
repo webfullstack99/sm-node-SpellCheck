@@ -77,17 +77,20 @@ module.exports = {
     // SUPPORTED FUNCTIONS ===========
     solvePunctuation: function (str) {
         let result = str;
-        let temp = '\\.\\?\\!\\:';
-        let pattern = new RegExp(`(?<=[${temp}])(\\s*\\${this.incorrectSign}*\\${this.correctSign}*)((?!\\s)[\\W\\w])+(?=[${temp}\s])`, 'g')
-        result = result.replace(pattern, (x) => {
+        result = result.replace(/(?<=[\.\?\!\:])(\s*\|*\=*){1,2}((?!\s)[\W\w])+/g, (x) => {
             x = x.trim();
             let word = x;
             if (this.isAfterPunctuation(word)) {
-                let pattern = new RegExp(`(?!\\s)[^\\${this.incorrectSign}\\${this.correctSign}]+`);
-                let realWord = x.match(pattern)[0];
-                word = Helper.ucfirst(realWord);
-                if (Helper.getFirstLetter(x) != Helper.getFirstLetter(word)) word = `==${word}==`;
-                return ` ${word}`;
+                let matchResult = x.match(new RegExp(`(?!\\s)[^\\${this.incorrectSign}\\${this.correctSign}]+`));
+                if (matchResult) {
+                    let realWord = matchResult[0];
+                    word = Helper.ucfirst(realWord);
+                    if (Helper.getFirstLetter(x) != Helper.getFirstLetter(word)) {
+                        if (x.slice(0, 1) == '=') word = `== ==${word}==`;
+                        else word = ` ==${word}==`;
+                    }
+                    return `${word}`;
+                }
             }
             return word;
         });
