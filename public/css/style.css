@@ -26,3 +26,7 @@ body {
 .title{
     font-size: 30px;
 }
+
+.decoration-none{
+    text-decoration: none !important;
+}

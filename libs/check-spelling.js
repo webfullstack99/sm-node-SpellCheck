@@ -88,8 +88,8 @@ module.exports = {
                     if (Helper.getFirstLetter(x) != Helper.getFirstLetter(word)) {
                         if (x.slice(0, 1) == '=') word = `== ==${word}==`;
                         else word = ` ==${word}==`;
-                    }
-                    return `${word}`;
+                        return `${word}`;
+                    } else return ` ${word}`;
                 }
             }
             return word;

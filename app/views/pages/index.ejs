@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-12">
-        <h3><a href="/" class="text-dark" title="Refresh">Spell check</a></h3>
+        <p class="title lead"><a href="/" class="text-dark decoration-none" title="Refresh">Spell check</a></p>
     </div>
     <!-- INPUT -->
     <div class="col-lg-6">
@@ -9,7 +9,7 @@
         <% var input = input || '' %>
         <p class="lead d-flex justify-content-between align-items-center">
             <span>Input</span>
-            <a href="/form" name="check-spelling" id="add-spelling-btn" class="">Custom</a>
+            <a href="/form" name="check-spelling" id="add-spelling-btn" class="decoration-none">Custom</a>
         </p>
         <form method="post" action="" id="main-form">
             <textarea name="input" placeholder="" id="area-input" class="form-control" rows="5"><%=input%></textarea>
@@ -24,5 +24,10 @@
     <div class="col-lg-6 mt-4 mt-lg-0">
         <p class="lead">Result</p>
         <p id="result-container" class="border border-secondary p-2"> <%-output%> </p>
+    </div>
+    <div class="col-12 text-right">
+        <p class="text-muted">
+            Developed by <a href="https://www.facebook.com/peteranh99" class="text-secondary decoration-none font-weight-bold">Peter Anh</a>
+        </p>
     </div>
 </div>
