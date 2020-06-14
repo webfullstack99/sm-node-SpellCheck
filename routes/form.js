@@ -6,8 +6,11 @@ var CheckSpelling = require('../libs/check-spelling');
 let page = 'form';
 var __path = require('../app/path');
 let viewFolder = `${__path.views}/pages`;
+var Helper = require(`${__path.libs}/helper`);
 
 router.get(`/`, function (req, res, next) {
+    if (!Helper.isLoggined(req)) req.redirect('/');
+    Helper.setLoggined(res);
     let type = CheckSpelling.getWordPairType(req.query.type);
     res.render(`${viewFolder}/${page}`, { require, wordPairType: type });
 });
@@ -19,7 +22,7 @@ router.post(`/`, async function (req, res, next) {
     let status = CheckSpelling.addSpelling(incorrect, correct, type);
     let msg = (status) ? 'Add spelling successfully' : 'Oh...oh.. something went wrong';
     req.flash(status, msg);
-    res.render(`${viewFolder}/${page}`, {incorrect, correct, require, wordPairType: type });
+    res.render(`${viewFolder}/${page}`, { incorrect, correct, require, wordPairType: type });
 });
 
 // delete

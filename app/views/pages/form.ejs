@@ -56,7 +56,7 @@
                     <td><%= pair.incorrect %></td>
                     <td><%= pair.correct %></td>
                     <td>
-                        <a href="/form/delete/<%=pair.incorrect%><%=urlQuery%>">Delete</a>
+                        <a class="delete-btn" data-incorrect="<%=pair.incorrect%>" href="/form/delete/<%=pair.incorrect%><%=urlQuery%>">Delete</a>
                     </td>
                 </tr>
                 <% } %>

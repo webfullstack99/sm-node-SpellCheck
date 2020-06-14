@@ -1,7 +1,9 @@
 $(document).ready(function () {
+    onDelete();
     onPaste();
     onCheck();
     onCopy();
+    onLogin();
     setup.activeTypeMenu();
     form.checkSpellingForm();
 })
@@ -16,9 +18,14 @@ let selector = {
     message: '#message',
     typeMenu: '#type-menu',
 
+    loginInput: '#loginInput',
+    loginConfirm: '#loginConfirm',
+    loginMsg: '.loginMsg',
+
     pasteBtn: '#paste-btn',
     checkBtn: '#check-btn',
     copyBtn: '#copy-btn',
+    deleteBtn: '.delete-btn',
 }
 
 let form = {
@@ -48,6 +55,25 @@ let setup = {
         if (matchResult) return matchResult[2];
         return defaultVal;
     }
+}
+
+function onDelete() {
+    $(selector.deleteBtn).click(function (e) {
+        let r = confirm(`Do you want to delete "${$(this).data('incorrect')}"?`);
+        if (!r) e.preventDefault();
+    })
+}
+
+function onLogin() {
+    $(selector.loginConfirm).click(function () {
+        $(selector.loginMsg).detach();
+        let val = $(selector.loginInput).val();
+        if (val == 'admin') {
+            window.location.replace('/form?password=admin');
+        } else {
+            $(selector.loginInput).after('<span class="loginMsg badge badge-danger">Password is incorrect<span>');
+        }
+    })
 }
 
 function onCopy() {

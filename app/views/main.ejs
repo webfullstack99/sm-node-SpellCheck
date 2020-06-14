@@ -2,19 +2,20 @@
 <html>
 
 <head>
-    <title>Spell check</title>
-    <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./css/style.css">
+    <%- include(`${__path.views}/elements/head`) %>
 </head>
 
 <body>
     <div class="container mt-4">
         <%- body%>
+
+        <!-- MODAL -->
+        <%- include(`${__path.views}/templates/modal`) %>
+
     </div>
 
-    <script src="./vendor/jquery/jquery-3.4.1.min.js"></script>
-    <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="./js/custom.js"></script>
+    <!-- SCRIPTS -->
+    <%- include(`${__path.views}/elements/scripts`) %>
 
 </body>
 

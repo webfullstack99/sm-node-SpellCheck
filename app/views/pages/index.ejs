@@ -9,7 +9,7 @@
         <% var input = input || '' %>
         <p class="lead d-flex justify-content-between align-items-center">
             <span>Input</span>
-            <a href="/form" name="check-spelling" id="add-spelling-btn" class="decoration-none">Custom</a>
+            <%- include(`${__path.views}/templates/adminLink`) %>
         </p>
         <form method="post" action="" id="main-form">
             <textarea name="input" placeholder="" id="area-input" class="form-control" rows="5"><%=input%></textarea>
@@ -27,7 +27,8 @@
     </div>
     <div class="col-12 text-right">
         <p class="text-muted">
-            Developed by <a href="https://www.facebook.com/peteranh99" class="text-secondary decoration-none font-weight-bold">Peter Anh</a>
+            Developed by <a href="https://www.facebook.com/peteranh99"
+                class="text-secondary decoration-none font-weight-bold">Peter Anh</a>
         </p>
     </div>
 </div>
