@@ -25,7 +25,7 @@ router.post(`/`, async function (req, res, next) {
             let tempInput = CheckSpelling.makeClean(req.body.input)
             let spell = nspell(dict)
             try {
-            checkSpellingResult = CheckSpelling.getResult(tempInput, spell);
+                checkSpellingResult = CheckSpelling.getResult(tempInput, spell);
             } catch (e) { console.log(e.message); }
         }
 
