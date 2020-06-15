@@ -8,7 +8,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                <input type="text" placeholder="Type password ..." class="form-control" id="loginInput">
+                <form id="login-form" method="post" action="/form">
+                    <input type="text" placeholder="Type password ..." class="form-control" id="loginInput" name="password">
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

@@ -10,6 +10,7 @@ $(document).ready(function () {
 
 let selector = {
     form: '#main-form',
+    loginForm: '#login-form',
     addSpellingForm: '#add-spelling-form',
     incorrectInput: '#incorrect-input',
     correctInput: '#correct-input',
@@ -65,13 +66,14 @@ function onDelete() {
 }
 
 function onLogin() {
-    $(selector.loginConfirm).click(function () {
+    $(selector.loginConfirm).click(function () { $(selector.loginForm).submit(); })
+
+    $(selector.loginForm).submit(function (e) {
         $(selector.loginMsg).detach();
         let val = $(selector.loginInput).val();
-        if (val == 'admin') {
-            window.location.replace('/form?password=admin');
-        } else {
+        if (val != 'admin') {
             $(selector.loginInput).after('<span class="loginMsg badge badge-danger">Password is incorrect<span>');
+            e.preventDefault();
         }
     })
 }

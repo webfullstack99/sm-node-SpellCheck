@@ -18,6 +18,7 @@ router.get(`/`, function (req, res, next) {
 
 // check spelling
 router.post(`/`, async function (req, res, next) {
+    let isLoggined = Helper.isLoggined(req);
     dictionary((err, dict) => {
         let checkSpellingResult = '';
         if (req.body.input) {
@@ -31,6 +32,7 @@ router.post(`/`, async function (req, res, next) {
         res.render(`${viewFolder}/index`, {
             input: req.body.input,
             output: checkSpellingResult,
+            isLoggined
         });
     })
 });

@@ -9,13 +9,17 @@ let viewFolder = `${__path.views}/pages`;
 var Helper = require(`${__path.libs}/helper`);
 
 router.get(`/`, function (req, res, next) {
-    if (!Helper.isLoggined(req)) req.redirect('/');
+    if (!Helper.isLoggined(req)) res.redirect('/');
     Helper.setLoggined(res);
     let type = CheckSpelling.getWordPairType(req.query.type);
     res.render(`${viewFolder}/${page}`, { require, wordPairType: type });
 });
 
 router.post(`/`, async function (req, res, next) {
+    if (req.body.password) {
+        Helper.setLoggined(res);
+        res.redirect('/form')
+    }
     let type = CheckSpelling.getWordPairType(req.query.type);
     let incorrect = req.body.incorrect || '';
     let correct = req.body.correct || '';
