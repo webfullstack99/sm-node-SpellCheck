@@ -6,7 +6,8 @@
     %>
     <!-- INPUT -->
     <div class="offset-lg-2 offset-0 col-lg-8">
-        <p class="title lead"><a title="Get json data" href="/form/json<%=urlQuery%>" class="decoration-none text-dark">Custom</a></p>
+        <p class="title lead"><a title="Get json data" href="/form/json<%=urlQuery%>"
+                class="decoration-none text-dark">Custom</a></p>
         <div class="my-2 d-flex justify-content-between align-items-center" title="Change word pair type">
             <div class="btn-group btn-group-sm" id="type-menu">
                 <a name="custom" href="/form?type=custom" class="btn">My word pair</a>
@@ -17,7 +18,7 @@
             <%- flash %>
         </div>
         <p id="message" class="badge badge-danger d-none">Please type input first!</p>
-        <form class="form-inline " method="post" action="form/add" id="add-spelling-form">
+        <form class="form-inline " method="post" action="form" id="add-spelling-form">
             <input type="text" class="form-control mb-2 mr-sm-2" id="incorrect-input" name="incorrect"
                 value="<%=incorrect%>" placeholder="Incorrect word">
             <input type="text" class="form-control mb-2 mr-sm-2" id="correct-input" name="correct" value="<%=correct%>"
@@ -56,7 +57,8 @@
                     <td><%= pair.incorrect %></td>
                     <td><%= pair.correct %></td>
                     <td>
-                        <a class="delete-btn" data-incorrect="<%=pair.incorrect%>" href="/form/delete/<%=pair.incorrect%><%=urlQuery%>">Delete</a>
+                        <a class="delete-btn" data-incorrect="<%=pair.incorrect%>"
+                            href="/form/delete/<%=pair.incorrect%><%=urlQuery%>">Delete</a>
                     </td>
                 </tr>
                 <% } %>
