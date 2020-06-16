@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    onSubmit();
     onDelete();
     onPaste();
     onCheck();
@@ -97,21 +98,45 @@ function onPaste() {
     });
 }
 
-function onCheck() {
-    $(selector.checkBtn).click(async function (e) {
-        if ($(selector.areaInput).val().trim() != '') $(selector.form).submit();
-        else solveMessage();
+function onSubmit() {
 
-    });
+    // validate
+    $(selector.form).submit(function (e) {
+        let value = $(selector.areaInput).val().trim();
+        let errMsg = getMessage(value);
+
+        // if not error
+        if (errMsg != '') {
+            solveMessage(errMsg);
+            e.preventDefault();
+        }
+    })
+}
+
+function getMessage(str) {
+    let msg = '';
+    if (str.trim() == '') {
+        msg = 'Please type input first';
+    } else if (str.match(/(\||\=)/g)) {
+        msg = 'Input is invalid';
+    }
+    return msg;
+}
+
+function onCheck() {
+    $(selector.checkBtn).click(async function (e) { $(selector.form).submit() });
 }
 
 let messageTimeout;
-function solveMessage() {
+function solveMessage(msg) {
     clearTimeout(messageTimeout);
-    $(selector.message).removeClass('d-none');
-    messageTimeout = setTimeout(() => {
-        $(selector.message).addClass('d-none');
-    }, 2000);
+    if (msg.trim() != '') {
+        $(selector.message).text(msg);
+        $(selector.message).removeClass('d-none');
+        messageTimeout = setTimeout(() => {
+            $(selector.message).addClass('d-none');
+        }, 2000);
+    }
 }
 
 function copy(str) {
