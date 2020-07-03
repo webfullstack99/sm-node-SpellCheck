@@ -4,4 +4,5 @@ module.exports = {
     get libs() { return `${this.root}/libs` },
     // views
     get views() { return `${this.app}/views` },
+    get routes() { return `${this.root}/routes` },
 }
